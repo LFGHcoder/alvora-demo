@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ResumeLens — Recruiters &amp; Applicants</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page-gradient" aria-hidden="true"></div>
+
+  <section id="authSection" class="auth-section">
+    <header class="site-header">
+      <a href="#" class="logo"><span class="logo-mark" aria-hidden="true"></span> ResumeLens</a>
+      <p class="tagline">Recruiters post jobs &amp; screen applicants. Applicants analyze resumes &amp; find roles.</p>
+    </header>
+
+    <div class="auth-layout">
+      <div class="hero">
+        <h1>Hire faster. Apply smarter.</h1>
+        <p class="hero-lead">
+          <strong>Recruiters:</strong> list jobs, shortlist applicants by resume match, send a timed screening question, and pick the best few for interviews.
+          <strong>Applicants:</strong> use the resume analyzer, browse jobs matched to your profile, and answer recruiter-assigned AI screening sets (5 questions, 1 minute each).
+        </p>
+        <ul class="hero-points">
+          <li>Choose your role when you create an account</li>
+          <li>All data in this demo stays in your browser</li>
+        </ul>
+      </div>
+
+      <div class="auth-card" aria-labelledby="authTitle">
+        <div class="auth-tabs">
+          <button type="button" class="auth-tab is-active" id="tabSignIn">Sign in</button>
+          <button type="button" class="auth-tab" id="tabSignUp">Create account</button>
+        </div>
+
+        <h2 id="authTitle" class="auth-title">Welcome back</h2>
+        <p class="auth-sub" id="authSubtitle">Sign in to continue.</p>
+
+        <form id="formSignIn" class="auth-panel">
+          <label class="field"><span>Email</span>
+            <input type="email" id="signInEmail" autocomplete="email" required placeholder="you@example.com" />
+          </label>
+          <label class="field"><span>Password</span>
+            <input type="password" id="signInPassword" autocomplete="current-password" required />
+          </label>
+          <button type="submit" class="btn btn-primary">Sign in</button>
+          <p class="form-hint">Use the same account type you registered with (recruiter or applicant).</p>
+        </form>
+
+        <form id="formSignUp" class="auth-panel" hidden>
+          <fieldset class="role-fieldset">
+            <legend class="field"><span>I am a</span></legend>
+            <div class="role-options">
+              <label class="role-card">
+                <input type="radio" name="signUpRole" value="applicant" checked />
+                <span class="role-title">Applicant / Student</span>
+                <span class="role-desc">Resume analyzer, job matches, apply &amp; answer screenings</span>
+              </label>
+              <label class="role-card">
+                <input type="radio" name="signUpRole" value="recruiter" />
+                <span class="role-title">Recruiter</span>
+                <span class="role-desc">Post jobs, shortlist, send Q&amp;A, pick interviewees</span>
+              </label>
+            </div>
+          </fieldset>
+          <label class="field"><span>Email</span>
+            <input type="email" id="signUpEmail" autocomplete="email" required placeholder="you@example.com" />
+          </label>
+          <label class="field"><span>Password</span>
+            <input type="password" id="signUpPassword" autocomplete="new-password" required minlength="6" />
+          </label>
+          <label class="field"><span>Confirm password</span>
+            <input type="password" id="signUpConfirm" autocomplete="new-password" required />
+          </label>
+          <button type="submit" class="btn btn-primary">Create account</button>
+          <p class="form-hint">Stored locally for demo only.</p>
+        </form>
+
+        <p class="auth-msg" id="authMessage" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- App shell -->
+  <section id="appSection" class="app-section hidden">
+    <header class="app-header">
+      <div class="app-header-inner">
+        <a href="#" class="logo logo-sm"><span class="logo-mark" aria-hidden="true"></span> ResumeLens</a>
+        <div class="app-header-actions">
+          <span class="role-badge" id="roleBadge"></span>
+          <span class="user-email" id="userEmailDisplay"></span>
+          <button type="button" class="btn btn-ghost" id="signOutBtn">Sign out</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Recruiter -->
+    <div id="recruiterView" class="dashboard hidden">
+      <nav class="subnav" aria-label="Recruiter sections">
+        <button type="button" class="subnav-btn is-active" data-rec-tab="jobs">Job postings</button>
+        <button type="button" class="subnav-btn" data-rec-tab="pipeline">Shortlist &amp; screening</button>
+        <button type="button" class="subnav-btn" data-rec-tab="inbox">Applicant messages</button>
+      </nav>
+
+      <div id="recTabJobs" class="rec-panel">
+        <div class="panel">
+          <h2>Post a new job</h2>
+          <p class="panel-desc">Applicants will see your listing and can apply with their resume.</p>
+          <label class="field"><span>Job title</span>
+            <input type="text" id="newJobTitle" placeholder="e.g. Frontend Developer" />
+          </label>
+          <label class="field"><span>Job description</span>
+            <textarea id="newJobDesc" rows="6" placeholder="Responsibilities, requirements, stack…"></textarea>
+          </label>
+          <button type="button" class="btn btn-primary" id="postJobBtn">Publish job</button>
+        </div>
+        <div class="panel">
+          <h2>Your job listings</h2>
+          <p class="panel-desc">Select a job, review applicants, choose who you like, and send AI screening questions.</p>
+          <div id="recruiterJobList" class="card-list"></div>
+        </div>
+      </div>
+
+      <div id="recTabPipeline" class="rec-panel hidden">
+        <div class="panel">
+          <h2>Shortlist &amp; timed Q&amp;A</h2>
+          <p class="panel-desc">Pick a job, select applicants, and send at least 5 AI questions (behavioral + theoretical). Each question has a 1-minute timer. Rate answers (1–5) to choose your top 2–3 for interviews.</p>
+          <label class="field"><span>Select job</span>
+            <select id="pipelineJobSelect"></select>
+          </label>
+          <div id="pipelineJobDetail"></div>
+        </div>
+      </div>
+
+      <div id="recTabInbox" class="rec-panel hidden">
+        <div class="panel wide-panel">
+          <h2>Messages from applicants</h2>
+          <p class="panel-desc">Notes sent to your recruiter email from the applicant “Message recruiters” tab.</p>
+          <div id="recruiterInboxList" class="card-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Applicant -->
+    <div id="applicantView" class="dashboard hidden">
+      <nav class="subnav" aria-label="Applicant sections">
+        <button type="button" class="subnav-btn is-active" data-app-tab="analyzer">Resume analyzer</button>
+        <button type="button" class="subnav-btn" data-app-tab="jobs">Job listings</button>
+        <button type="button" class="subnav-btn" data-app-tab="screenings">Screening questions</button>
+        <button type="button" class="subnav-btn" data-app-tab="reachout">Message recruiters</button>
+      </nav>
+
+      <div id="appTabAnalyzer" class="app-tab-panel">
+        <main class="app-main">
+          <div class="panel panel-upload">
+            <h2>Your resume</h2>
+            <p class="panel-desc">Upload a resume PDF; we extract its text and use it for scoring when you apply.</p>
+            <label class="field"><span>Upload resume PDF</span>
+              <input type="file" id="resumePdfInput" accept="application/pdf" />
+            </label>
+            <p class="form-hint" id="resumePdfStatus">No file selected.</p>
+            <p class="panel-desc">Extracted text preview (used for matching):</p>
+            <pre id="resumePdfPreview" class="pdf-preview" aria-live="polite">No file loaded yet.</pre>
+            <textarea id="resumeText" rows="10" hidden></textarea>
+            <label class="field"><span>Compare to job description (optional)</span>
+              <textarea id="jobDesc" rows="6" placeholder="Paste a job description to analyze match…"></textarea>
+            </label>
+            <button type="button" class="btn btn-primary" id="analyzeBtn">Analyze match</button>
+            <button type="button" class="btn btn-ghost" id="saveResumeBtn">Save resume to profile</button>
+          </div>
+          <div class="panel panel-results">
+            <h2>Analysis</h2>
+            <p class="panel-desc">Keyword overlap between your resume and the pasted job text.</p>
+            <div class="score-block">
+              <div class="score-ring" id="scoreRing" style="--score: 0;">
+                <div class="score-ring-inner">
+                  <span class="score-value" id="scoreValue">—</span>
+                  <span class="score-label">match</span>
+                </div>
+              </div>
+              <div class="score-meta">
+                <p><strong>Matched</strong></p>
+                <p class="pill-list" id="matchedList">Run analysis or apply to a job.</p>
+                <p><strong>Missing</strong></p>
+                <p class="pill-list muted" id="missingList">—</p>
+              </div>
+            </div>
+            <div class="insight" id="insightBox" hidden><p id="insightText"></p></div>
+          </div>
+        </main>
+      </div>
+
+      <div id="appTabJobs" class="app-tab-panel hidden">
+        <div class="panel wide-panel">
+          <h2>Jobs matched to your resume</h2>
+          <p class="panel-desc">Match % uses your saved resume text. Save your resume on the analyzer tab first.</p>
+          <div id="applicantJobList" class="card-list"></div>
+        </div>
+      </div>
+
+      <div id="appTabScreenings" class="app-tab-panel hidden">
+        <div class="panel wide-panel">
+          <h2>Recruiter screening questions</h2>
+          <p class="panel-desc">You get <strong>1 minute per question</strong> once you start.</p>
+          <div id="pendingScreeningsList" class="card-list"></div>
+        </div>
+      </div>
+
+      <div id="appTabReachout" class="app-tab-panel hidden">
+        <div class="panel wide-panel">
+          <h2>Message a recruiter</h2>
+          <p class="panel-desc">Send a short note to a recruiter email (e.g. from a job posting).</p>
+          <label class="field"><span>Recruiter email</span>
+            <input type="email" id="reachoutTo" placeholder="recruiter@company.com" />
+          </label>
+          <label class="field"><span>Message</span>
+            <textarea id="reachoutBody" rows="5" placeholder="Introduce yourself and why you are a fit…"></textarea>
+          </label>
+          <button type="button" class="btn btn-primary" id="sendReachoutBtn">Send message</button>
+          <h3 class="h3-spaced">Inbox from recruiters</h3>
+          <p class="panel-desc">When recruiters reply in a real app, messages would appear here. For demo, see your sent messages below.</p>
+          <div id="reachoutSentList" class="card-list"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal: answer screening (1 min timer) -->
+  <div id="answerModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="answerModalTitle">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-box">
+      <h2 id="answerModalTitle">Screening question</h2>
+      <p class="timer" id="answerTimer">1:00</p>
+      <p id="answerModalQuestion" class="modal-q"></p>
+      <label class="field"><span>Your answer</span>
+        <textarea id="answerModalText" rows="4" placeholder="Type your answer…"></textarea>
+      </label>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close-modal>Cancel</button>
+        <button type="button" class="btn btn-primary" id="startScreeningBtn">Start 1 min timer</button>
+        <button type="button" class="btn btn-primary hidden" id="submitScreeningAnswerBtn" disabled>Submit answer</button>
+      </div>
+      <p class="form-hint" id="answerModalHint">Click Start to begin. You have 1 minute to submit your answer.</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
