@@ -1,4 +1,4 @@
-/* ResumeLens — local demo: recruiters, applicants, jobs, screenings, outreach */
+/* Alvora AI — local demo: recruiters, applicants, jobs, screenings, outreach */
 
 const STORAGE_USERS = "resumelens_users";
 const STORAGE_SESSION = "resumelens_session";
